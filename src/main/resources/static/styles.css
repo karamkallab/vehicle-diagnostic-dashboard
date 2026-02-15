@@ -1,0 +1,126 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+
+    background: 
+        linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+        url('/car-bg.png');
+
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+.vehicle-card button {
+    margin-right: 10px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
+
+.vehicle-card button:hover {
+    opacity: 0.8;
+}
+
+
+h1, h2 {
+    color: white;
+}
+
+h1 {
+    text-align: center;
+}
+
+.container {
+    max-width: 900px;
+    margin: auto;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    padding: 25px;
+    margin-bottom: 25px;
+    border-radius: 15px;
+
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+
+input {
+    padding: 10px;
+    margin: 8px 0;
+    width: 100%;
+    box-sizing: border-box;
+
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 8px;
+
+    font-size: 14px;
+}
+
+
+button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.submit-btn {
+    background-color: #007bff;
+    color: white;
+}
+
+.clear-btn {
+    background-color: #dc3545;
+    color: white;
+    margin-left: 10px;
+}
+
+.vehicle-card {
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 6px;
+    color: white;
+}
+
+.OK {
+    background-color: #28a745;
+}
+
+.WARNING {
+    background-color: #ffc107;
+    color: black;
+}
+
+.CRITICAL {
+    background-color: #dc3545;
+}
+
+.stats {
+    display: flex;
+    justify-content: space-between;
+}
+
+.stat-box {
+    flex: 1;
+    margin: 8px;
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: bold;
+    backdrop-filter: blur(6px);
+}
+
+.stat-total { background: #6c757d; }
+.stat-ok { background: #28a745; }
+.stat-warning { background: #ffc107; color: black; }
+.stat-critical { background: #dc3545; }

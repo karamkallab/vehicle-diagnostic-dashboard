@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vehicle Monitor Dashboard</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1> Vehicle Monitoring Dashboard</h1>
+
+    <div class="card">
+        <h2>Add Vehicle</h2>
+
+        <input id="vehicleId" placeholder="Vehicle ID">
+        <input id="speed" placeholder="Speed">
+        <input id="fuel" placeholder="Fuel Level">
+        <input id="temp" placeholder="Engine Temp">
+        <input id="rpm" placeholder="RPM">
+        <input id="battery" placeholder="Battery Voltage">
+        <input id="brakeTemp" placeholder="Brake Temperature">
+
+        <button class="submit-btn" onclick="sendVehicle()">Submit</button>
+        <button class="clear-btn" onclick="clearVehicles()">Clear All</button>
+    </div>
+
+    <div class="card">
+        <h2>Statistics</h2>
+        <div class="stats">
+            <div class="stat-box stat-total" id="totalCount">Total: 0</div>
+            <div class="stat-box stat-ok" id="okCount">OK: 0</div>
+            <div class="stat-box stat-warning" id="warningCount">Warning: 0</div>
+            <div class="stat-box stat-critical" id="criticalCount">Critical: 0</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Vehicles</h2>
+        <div id="vehicleList"></div>
+    </div>
+
+</div>
+
+<script>
+
+async function sendVehicle() {
+
+    const vehicle = {
+        id: document.getElementById("vehicleId").value,
+        speed: parseInt(document.getElementById("speed").value),
+        fuelLevel: parseInt(document.getElementById("fuel").value),
+        engineTemp: parseInt(document.getElementById("temp").value),
+        rpm: parseInt(document.getElementById("rpm").value),
+        batteryVoltage: parseFloat(document.getElementById("battery").value),
+        brakeTemp: parseInt(document.getElementById("brakeTemp").value)
+    };
+
+    await fetch("/vehicles/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(vehicle)
+    });
+
+    clearForm();  
+
+    loadVehicles();
+    loadStats();
+}
+
+
+async function loadVehicles() {
+
+    const response = await fetch("/vehicles");
+    const vehicles = await response.json();
+
+    let html = "";
+
+    vehicles.forEach(v => {
+
+        html += `
+            <div class="vehicle-card ${v.status}">
+                <strong>Vehicle ID: ${v.id}</strong><br>
+                Speed: ${v.speed}<br>
+                Fuel: ${v.fuelLevel}<br>
+                Engine Temp: ${v.engineTemp}<br>
+                RPM: ${v.rpm}<br>
+                Battery: ${v.batteryVoltage} V<br>
+                Brake Temp: ${v.brakeTemp}<br>
+                Status: ${v.status}<br>
+                Warnings: ${v.warnings.join(", ")}<br>
+                Created: ${formatDate(v.createdAt)}<br><br>
+
+                <button onclick="deleteVehicle('${v.id}')">Delete</button>
+                <button onclick="resolveVehicle('${v.id}')">Resolve</button>
+            </div>
+        `;
+    });
+
+    document.getElementById("vehicleList").innerHTML = html;
+}
+
+async function loadStats() {
+
+    const response = await fetch("/vehicles/stats");
+    const stats = await response.json();
+
+    document.getElementById("totalCount").innerText = "Total: " + stats.totalVehicles;
+    document.getElementById("okCount").innerText = "OK: " + stats.okCount;
+    document.getElementById("warningCount").innerText = "Warning: " + stats.warningCount;
+    document.getElementById("criticalCount").innerText = "Critical: " + stats.criticalCount;
+}
+
+async function deleteVehicle(id) {
+    await fetch(`/vehicles/${id}`, { method: "DELETE" });
+    loadVehicles();
+    loadStats();
+}
+
+async function resolveVehicle(id) {
+    await fetch(`/vehicles/${id}/resolve`, { method: "PUT" });
+    loadVehicles();
+    loadStats();
+}
+
+function clearForm() {
+    document.getElementById("vehicleId").value = "";
+    document.getElementById("speed").value = "";
+    document.getElementById("fuel").value = "";
+    document.getElementById("temp").value = "";
+    document.getElementById("rpm").value = "";
+    document.getElementById("battery").value = "";
+    document.getElementById("brakeTemp").value = "";
+}
+
+
+function formatDate(dateString) {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return date.toLocaleString();
+}
+
+setInterval(() => {
+    loadVehicles();
+    loadStats();
+}, 5000);
+
+loadVehicles();
+loadStats();
+
+</script>
+
+</body>
+</html>
